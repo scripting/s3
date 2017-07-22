@@ -22,9 +22,6 @@ var myProductName = "daveS3", myVersion = "0.4.0";
 	SOFTWARE.
 	*/
 
-var AWS = require ("aws-sdk");
-var s3 = new AWS.S3 ();
-
 exports.stats = s3stats;
 exports.defaultType = s3defaultType;
 exports.defaultAcl = s3defaultAcl;
@@ -34,6 +31,9 @@ exports.redirect = s3Redirect;
 exports.getObjectMetadata = s3GetObjectMetadata;
 exports.getObject = s3GetObject;
 exports.listObjects = s3ListObjects;
+
+const AWS = require ("aws-sdk");
+const s3 = new AWS.S3 ();
 
  
 

@@ -2,7 +2,7 @@
 
 ### How to install
 
-`npm install daveS3
+`npm install daveS3`
 
 #### Story
 
