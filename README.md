@@ -1,8 +1,8 @@
-## daveS3 package
+## daves3 package
 
 ### How to install
 
-`npm install daveS3`
+`npm install daves3`
 
 #### Story
 

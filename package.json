@@ -1,5 +1,5 @@
 {
-	"name": "daveS3", 
+	"name": "daves3", 
 	"description": "Routines that simplify the interface to Amazon S3.",
 	"author": "Dave Winer <dave@smallpicture.com>",
 	"license": "MIT",
