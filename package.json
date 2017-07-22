@@ -1,0 +1,18 @@
+{
+	"name": "daveS3", 
+	"description": "Routines that simplify the interface to Amazon S3.",
+	"author": "Dave Winer <dave@smallpicture.com>",
+	"license": "MIT",
+	"version": "0.4.0",
+	"main": "daves3.js",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/scripting/s3.git"
+		},
+	"files": [
+		"daves3.js"
+		],
+	"dependencies" : {
+		"aws-sdk": "*"
+		}
+	}
