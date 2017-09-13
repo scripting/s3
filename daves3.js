@@ -1,5 +1,5 @@
-var myProductName = "daves3", myVersion = "0.4.0";  
 
+var myProductName = "daves3", myVersion = "0.4.1";  
 /*  The MIT License (MIT)
 	Copyright (c) 2014-2017 Dave Winer
 	
@@ -31,12 +31,12 @@ exports.redirect = s3Redirect;
 exports.getObjectMetadata = s3GetObjectMetadata;
 exports.getObject = s3GetObject;
 exports.listObjects = s3ListObjects;
+exports.deleteObject = s3DeleteObject; //8/28/17 by DW
 
 const AWS = require ("aws-sdk");
 const s3 = new AWS.S3 ();
 
  
-
 var s3defaultType = "text/plain";
 var s3defaultAcl = "public-read";
 
@@ -156,8 +156,24 @@ function s3ListObjects (path, callback) {
 		}
 	getNextGroup ();
 	}
-
-
-
-
+function s3DeleteObject (path, callback) { //8/28/17 by DW
+	var splitpath = s3SplitPath (path);
+	var params = {
+		Bucket: splitpath.Bucket,
+		Key: splitpath.Key
+		};
+	s3.deleteObject (params, function (err) { 
+		if (err) {
+			console.log ("s3DeleteObject: err.message == " + err.message);
+			if (callback !== undefined) {
+				callback (err);
+				}
+			}
+		else {
+			if (callback !== undefined) {
+				callback (undefined);
+				}
+			}
+		});
+	}
 
