@@ -1,5 +1,5 @@
+var myProductName = "daves3", myVersion = "0.4.9";  
 
-var myProductName = "daves3", myVersion = "0.4.1";  
 /*  The MIT License (MIT)
 	Copyright (c) 2014-2017 Dave Winer
 	
@@ -32,9 +32,12 @@ exports.getObjectMetadata = s3GetObjectMetadata;
 exports.getObject = s3GetObject;
 exports.listObjects = s3ListObjects;
 exports.deleteObject = s3DeleteObject; //8/28/17 by DW
+exports.uploadBigFile = s3UploadBigFile; //9/14/17 by DW
+exports.folderExists = s3FolderExists; //6/5/18 by DW
 
 const AWS = require ("aws-sdk");
 const s3 = new AWS.S3 ();
+const fs = require ("fs");
 
  
 var s3defaultType = "text/plain";
@@ -45,6 +48,39 @@ var s3stats = {
 	ctWrites: 0, ctBytesWritten: 0, ctWriteErrors: 0
 	};
 
+function stringLower (s) { //6/5/18 by DW
+	if (s === undefined) { //1/26/15 by DW
+		return ("");
+		}
+	s = s.toString (); //1/26/15 by DW
+	return (s.toLowerCase ());
+	}
+function beginsWith (s, possibleBeginning, flUnicase) { //6/5/18 by DW
+	if (s === undefined) { //7/15/15 by DW
+		return (false);
+		}
+	if (s.length == 0) { //1/1/14 by DW
+		return (false);
+		}
+	if (flUnicase === undefined) {
+		flUnicase = true;
+		}
+	if (flUnicase) {
+		for (var i = 0; i < possibleBeginning.length; i++) {
+			if (stringLower (s [i]) != stringLower (possibleBeginning [i])) {
+				return (false);
+				}
+			}
+		}
+	else {
+		for (var i = 0; i < possibleBeginning.length; i++) {
+			if (s [i] != possibleBeginning [i]) {
+				return (false);
+				}
+			}
+		}
+	return (true);
+	}
 function s3SplitPath (path) { //split path like this: /tmp.scripting.com/testing/one.txt -- into bucketname and path.
 	var bucketname = "";
 	if (path.length > 0) {
@@ -172,6 +208,56 @@ function s3DeleteObject (path, callback) { //8/28/17 by DW
 		else {
 			if (callback !== undefined) {
 				callback (undefined);
+				}
+			}
+		});
+	}
+function s3UploadBigFile (f, s3path, type, acl, callback) {
+	let theStream = fs.createReadStream (f);
+	let splitpath = s3SplitPath (s3path);
+	
+	if (acl === undefined) {
+		acl = s3defaultAcl;
+		}
+	
+	let myParams = {
+		Bucket: splitpath.Bucket,
+		Key: splitpath.Key,
+		ContentType: type, 
+		ACL: acl
+		};
+	
+	let s3obj = new AWS.S3 ({params: myParams});
+	s3obj.upload ({Body: theStream}, function (err, data) {
+		if (err) {
+			if (callback !== undefined) {
+				callback (err);
+				}
+			}
+		else {
+			if (callback !== undefined) {
+				callback (undefined, data);
+				}
+			}
+		});
+	}
+function s3FolderExists (s3path, callback) { //6/5/18 by DW
+	var flHaveCalledBack = false;
+	var splitpath = s3SplitPath (s3path);
+	var pathToLookFor = splitpath.Key + "/";
+	s3ListObjects (s3path, function (obj) {
+		if (obj.flLastObject === undefined) {
+			if (beginsWith (obj.Key, pathToLookFor)) {
+				if (!flHaveCalledBack) {
+					callback (true);
+					flHaveCalledBack = true;
+					}
+				}
+			}
+		else {
+			if (!flHaveCalledBack) {
+				callback (false);
+				flHaveCalledBack = true;
 				}
 			}
 		});
