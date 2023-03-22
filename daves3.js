@@ -1,7 +1,7 @@
-var myProductName = "daves3", myVersion = "0.4.9";  
+var myProductName = "daves3", myVersion = "0.4.10";  
 
 /*  The MIT License (MIT)
-	Copyright (c) 2014-2017 Dave Winer
+	Copyright (c) 2014-2023 Dave Winer
 	
 	Permission is hereby granted, free of charge, to any person obtaining a copy
 	of this software and associated documentation files (the "Software"), to deal
@@ -34,6 +34,8 @@ exports.listObjects = s3ListObjects;
 exports.deleteObject = s3DeleteObject; //8/28/17 by DW
 exports.uploadBigFile = s3UploadBigFile; //9/14/17 by DW
 exports.folderExists = s3FolderExists; //6/5/18 by DW
+
+require ("aws-sdk/lib/maintenance_mode_message").suppress = true; //3/22/23 by DW
 
 const AWS = require ("aws-sdk");
 const s3 = new AWS.S3 ();
