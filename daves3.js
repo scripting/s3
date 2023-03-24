@@ -1,4 +1,4 @@
-var myProductName = "daves3", myVersion = "0.4.10";  
+var myProductName = "daves3", myVersion = "0.4.11";  
 
 /*  The MIT License (MIT)
 	Copyright (c) 2014-2023 Dave Winer
@@ -145,10 +145,15 @@ function s3Redirect (path, url) { //1/30/14 by DW -- doesn't appear to work -- d
 			}
 		});
 	}
-function s3GetObjectMetadata (path, callback) {
+function s3GetObjectMetadata (path, callback, flFixedCallbackParams=false) {
 	var params = s3SplitPath (path);
 	s3.headObject (params, function (err, data) {
-		callback (data);
+		if (flFixedCallbackParams) {
+			callback (err, data);
+			}
+		else {
+			callback (data);
+			}
 		});
 	}
 function s3GetObject (path, callback) {
